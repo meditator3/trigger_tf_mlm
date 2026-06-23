@@ -14,5 +14,5 @@ jobs:
       - run: |
           chmod +ox ./start.sh
           ./start.sh    
-          echo ${{ github.event.inputs.service }}
-          echo ${{ github.event.inputs.revision }}
+          echo ${{ github.event.client-payload.service }}
+          echo ${{ github.event.client-payload.revision }}
