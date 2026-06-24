@@ -14,5 +14,5 @@ jobs:
           ./start.sh    
           echo "${{ github.event.client_payload.service }}"
           echo "${{ github.event.client_payload.revision }}"
-          terraform --version
+          
           helm --version
