@@ -25,8 +25,7 @@ resource "aws_eip" "nat" {
 resource "aws_nat_gateway" "nat" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public-subnets[0].id
-  single_nat_gateway = true  
-  one_nat_gateway_per_az = false
+
   tags = {
     Name = "${var.CLUSTER_NAME}-nat"
     ManagedBy = "Terraform"
