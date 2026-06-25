@@ -25,3 +25,22 @@ data "aws_iam_policy_document" "lb_controller_assume" {
         }
     }
 }
+# read current alb address from existing alb(deployed via helm of the app)
+data "kubernetes_ingress_v1" "mlm" {
+  metadata {
+    name      = "mlm-ingress"
+    namespace = "production"
+  }
+  depends_on = [helm_release.mlm-test]
+}
+
+# wait until dns for alb is provisioned
+resource "time_sleep" "wait_for_alb_dns" {
+  create_duration = "150s"
+  depends_on = [data.kubernetes_ingress_v1.mlm]
+}
+# gets address of alb
+data "dns_a_record_set" "alb" {
+  host       = data.kubernetes_ingress_v1.mlm.status[0].load_balancer[0].ingress[0].hostname
+  depends_on = [time_sleep.wait_for_alb_dns]
+}

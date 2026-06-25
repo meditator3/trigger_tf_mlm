@@ -1,0 +1,10 @@
+
+# values for dynamic provisioning
+
+image:
+  imageName_tag: pathlesswalker/malam_test:746fa77226de9f54f114c7fbc79e48ccaa9e20ee
+  replicas: 1
+
+service:
+  port: 80
+  targetPort: 3000
