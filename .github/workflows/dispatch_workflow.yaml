@@ -16,6 +16,8 @@ jobs:
           echo "${{ github.event.client_payload.service }}"
           echo "${{ github.event.client_payload.revision }}"
           echo "running terraform"
+
+      
       - name: Setup Terraform 
         uses: hashicorp/setup-terraform@v3
         with:
@@ -23,3 +25,16 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+
+      # apply the new image tag from CI
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var="image_tag=${{ github.event.client_payload.revision }}"
+
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'

@@ -18,3 +18,8 @@ variable "CLUSTER_NAME" {
     default = "production-eks-mlm"
 }
 
+variable "image_tag" {
+    type        = string
+    description = "Last tag of container image injected from CI"
+    default     = "746fa77226de9f54f114c7fbc79e48ccaa9e20ee" 
+}

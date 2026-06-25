@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: mlm-test
-        image: {{ .Values.image.imageName_tag }}
+        image: "{{ .Values.image.repository}}:{{ .Values.image.tag }}"
         ports:
           - name: http
             containerPort: {{ .Values.service.targetPort }}
