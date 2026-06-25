@@ -81,17 +81,21 @@ resource "null_resource" "wait_for_alb_loop" {
           aws eks update-kubeconfig --region us-east-2 --name production-eks-mlm
           echo "Waiting for AWS ALB to be created..."
           
-          for i in {1..30}; do
+          for i in {1..40}; do
             # FIXED: camelCase 'loadBalancer' required for raw jsonpath parsing on Linux
             HOSTNAME=$(kubectl get ingress mlm-ingress -n production -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null)
             
             if [ -n "$HOSTNAME" ]; then
-              echo "Success! ALB Address found: $HOSTNAME"
-              exit 0
+              echo "Success! ALB Address found: $HOSTNAME .. now verifying DNS resolution"
+              if nslookup "$HOSTNAME" >/dev/null 2>&1 || host "$HOSTNAME" >/dev/null 2>&1; then
+                echo "Success! ALB DNS is active and resolvable."
+                exit 0
+              fi
+              echo "Hostname exists but DNS is not propagated yet..."
             fi
-            
-            echo "ALB not ready yet. Retrying in 10 seconds... (Attempt $i/30)"
-            sleep 10
+
+            echo "ALB not ready yet. Retrying in 15 seconds... (Attempt $i/40)"
+            sleep 15
           done
           
           echo "Error: Timed out waiting for ALB after 5 minutes."
