@@ -1,0 +1,14 @@
+# Local backend state files
+*.tfstate
+*.tfstate.*
+
+# Crash logs and runtime locks
+*.log
+*.tfstate.lock.info
+
+# Ignore the local hidden .terraform directory (contains heavy provider binaries, modules, caches)
+.terraform/
+
+# Ignore variables containing secrets (if you use them)
+*.tfvars
+*.tfvars.json
