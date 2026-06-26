@@ -1,0 +1,86 @@
+AmazonEKSClusterPolicy
+AmazonEKSServicePolicy
+AmazonVPCFullAccess
+
+iam-nat-alb-eks
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowIAMRoleCreationForEKS",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateRole",
+                "iam:DeleteRole",
+                "iam:GetRole",
+                "iam:UpdateRole",
+                "iam:ListRoles",
+                "iam:PassRole",
+                "iam:AttachRolePolicy",
+                "iam:DetachRolePolicy",
+                "iam:PutRolePolicy",
+                "iam:DeleteRolePolicy",
+                "iam:ListRolePolicies",
+                "iam:CreatePolicy",
+                "iam:DeletePolicy",
+                "iam:GetPolicy",
+                "iam:ListInstanceProfilesForRole",
+                "iam:GetPolicyVersion",
+                "iam:ListPolicyVersions",
+                "iam:GetRolePolicy",
+                "iam:CreateInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:AddRoleToInstanceProfile",
+                "iam:RemoveRoleFromInstanceProfile",
+                "iam:CreateOpenIDConnectProvider",
+                "iam:DeleteOpenIDConnectProvider",
+                "iam:GetOpenIDConnectProvider",
+                "iam:TagRole"
+            ],
+            "Resource": [
+                "arn:aws:iam::*:role/*eks*",
+                "arn:aws:iam::*:role/*node*",
+                "arn:aws:iam::*:policy/*",
+                "arn:aws:iam::*:role/*Nodegroup*",
+                "arn:aws:iam::*:role/*load-balancer*",
+                "arn:aws:iam::*:role/aws-service-role/*",
+                "arn:aws:iam::*:oidc-provider/*",
+                "arn:aws:iam::*:instance-profile/*"
+            ]
+        },
+        {
+            "Sid": "AllowALBandELBCreation",
+            "Effect": "Allow",
+            "Action": [
+                "elasticloadbalancing:*",
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAddressesAttribute",
+                "ec2:DescribeInternetGateways"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowEKSControlPlaneDependencies",
+            "Effect": "Allow",
+            "Action": [
+                "eks:*",
+                "kms:DescribeKey",
+                "kms:CreateKey",
+                "kms:CreateGrant"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowEKSServiceLinkedRoleCreation",
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "arn:aws:iam::*:role/aws-service-role/eks-nodegroup.amazonaws.com/AWSServiceRoleForAmazonEKSNodegroup",
+            "Condition": {
+                "StringEquals": {
+                    "iam:AWSServiceName": "eks-nodegroup.amazonaws.com"
+                }
+            }
+        }
+    ]
+}
