@@ -7,6 +7,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+
     steps:
       - name: checkout TF and helm files to runner
         uses: actions/checkout@v4
@@ -22,19 +28,18 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.8.0"
+      
+      - name: boostrap s3 for state
+        run: terraform -chdir=bootstrap_s3 init
+
+      - name: setup s3 as state bucket
+        run: terraform -chdir=bootstrap_s3 apply -auto-approve
 
       - name: Terraform Init
-        run: terraform init
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-2'
+        run: terraform -migrate-state init
+        
 
       # apply the new image tag from CI
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="image_tag=${{ github.event.client_payload.revision }}"
 
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-2'
