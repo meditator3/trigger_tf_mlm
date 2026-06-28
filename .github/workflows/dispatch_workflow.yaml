@@ -39,5 +39,5 @@ jobs:
 
       # apply the new image tag from CI
       - name: Terraform -chdir=main_infra Apply -auto-approve
-        run: terraform apply -auto-approve -var="image_tag=${{ github.event.client_payload.revision }}"
+        run: terraform -chdir=main_infra apply -auto-approve -var="image_tag=${{ github.event.client_payload.revision }}"
 
