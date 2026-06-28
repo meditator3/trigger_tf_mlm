@@ -36,10 +36,10 @@ jobs:
         run: terraform -chdir=bootstrap_s3 apply -auto-approve
 
       - name: Terraform Init
-        run: terraform -migrate-state init
+        run: terraform -chdir=main_infra init
         
 
       # apply the new image tag from CI
-      - name: Terraform Apply
+      - name: Terraform -chdir=main_infra Apply -auto-approve
         run: terraform apply -auto-approve -var="image_tag=${{ github.event.client_payload.revision }}"
 
