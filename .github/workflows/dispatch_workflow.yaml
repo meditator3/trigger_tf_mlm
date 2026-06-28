@@ -17,8 +17,6 @@ jobs:
       - name: checkout TF and helm files to runner
         uses: actions/checkout@v4
       - run: |
-          chmod +x ./start.sh
-          ./start.sh    
           echo "${{ github.event.client_payload.service }}"
           echo "${{ github.event.client_payload.revision }}"
           echo "running terraform"
